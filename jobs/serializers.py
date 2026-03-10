@@ -5,10 +5,12 @@ from .models import Bid, Job, JobStatus
 
 
 class JobSerializer(serializers.ModelSerializer):
+    bid_count = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Job
         fields = "__all__"
-        read_only_fields = ["created_by", "created_at", "updated_at"]
+        read_only_fields = ["created_by", "created_at", "updated_at", "bid_count"]
 
     def create(self, validated_data):
         # Force created_by to be the authenticated user.
