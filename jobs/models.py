@@ -41,3 +41,39 @@ class Job(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.status})"
+
+
+class BidStatus(models.TextChoices):
+    PENDING = "PENDING", "Pending"
+    ACCEPTED = "ACCEPTED", "Accepted"
+    REJECTED = "REJECTED", "Rejected"
+
+
+class Bid(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="bids")
+    worker = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="bids",
+    )
+    bid_price = models.DecimalField(max_digits=12, decimal_places=2)
+    proposal_message = models.TextField()
+    estimated_days = models.PositiveIntegerField()
+    status = models.CharField(
+        max_length=20,
+        choices=BidStatus.choices,
+        default=BidStatus.PENDING,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "bids"
+        unique_together = ("job", "worker")
+        indexes = [
+            models.Index(fields=["job"]),
+            models.Index(fields=["worker"]),
+            models.Index(fields=["status"]),
+        ]
+
+    def __str__(self):
+        return f"Bid<{self.worker_id} -> {self.job_id}>"

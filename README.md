@@ -215,6 +215,11 @@ Base URL: `http://127.0.0.1:8000`
 - Endpoint: `/api/jobs/`
 - Auth: Required (`Bearer <access_token>`)
 - Returns only `OPEN` jobs, newest first.
+- Supports filtering:
+  - `?category=cleaning`
+  - `?location=Ahmedabad`
+  - `?min_budget=500`
+  - `?max_budget=5000`
 
 #### Dummy Success Response (200)
 
@@ -258,6 +263,112 @@ Base URL: `http://127.0.0.1:8000`
   "created_at": "2026-03-10T10:00:00Z",
   "updated_at": "2026-03-10T10:00:00Z"
 }
+```
+
+### 8. Place Bid (Worker)
+
+- Method: `POST`
+- Endpoint: `/api/jobs/{job_id}/bid/`
+- Auth: Required (`Bearer <access_token>`)
+- Only Workers can place bids.
+
+#### Dummy Request Body
+
+```json
+{
+  "bid_price": "1500.00",
+  "proposal_message": "I can complete this job quickly.",
+  "estimated_days": 2
+}
+```
+
+#### Dummy Success Response (201)
+
+```json
+{
+  "id": 10,
+  "job": 1,
+  "worker": {
+    "id": "ab8b1c5a-76b3-4e5c-8b84-2e1a1f122222",
+    "username": "worker_1",
+    "display_name": "Worker One",
+    "first_name": "Worker",
+    "last_name": "One",
+    "email": "worker@example.com"
+  },
+  "bid_price": "1500.00",
+  "proposal_message": "I can complete this job quickly.",
+  "estimated_days": 2,
+  "status": "PENDING",
+  "created_at": "2026-03-10T10:30:00Z"
+}
+```
+
+### 9. View Bids for Job (Client)
+
+- Method: `GET`
+- Endpoint: `/api/jobs/{job_id}/bids/`
+- Auth: Required (`Bearer <access_token>`)
+- Only the job creator can view bids.
+
+#### Dummy Success Response (200)
+
+```json
+[
+  {
+    "id": 10,
+    "job": 1,
+    "worker": {
+      "id": "ab8b1c5a-76b3-4e5c-8b84-2e1a1f122222",
+      "username": "worker_1",
+      "display_name": "Worker One",
+      "first_name": "Worker",
+      "last_name": "One",
+      "email": "worker@example.com"
+    },
+    "bid_price": "1500.00",
+    "proposal_message": "I can complete this job quickly.",
+    "estimated_days": 2,
+    "status": "PENDING",
+    "created_at": "2026-03-10T10:30:00Z"
+  }
+]
+```
+
+### 10. Worker Bids
+
+- Method: `GET`
+- Endpoint: `/api/worker/bids/`
+- Auth: Required (`Bearer <access_token>`)
+- Workers can see all bids they placed.
+
+#### Dummy Success Response (200)
+
+```json
+[
+  {
+    "id": 10,
+    "job": {
+      "id": 1,
+      "created_by": "f8c61eca-2b96-4e01-b29a-367f5fdb7f56",
+      "title": "Build a landing page",
+      "description": "Need a responsive marketing landing page with 4 sections.",
+      "category": "Web Development",
+      "location": "Remote",
+      "budget": "500.00",
+      "deadline": "2026-04-01",
+      "status": "OPEN",
+      "created_at": "2026-03-10T10:00:00Z",
+      "updated_at": "2026-03-10T10:00:00Z"
+    },
+    "worker": "ab8b1c5a-76b3-4e5c-8b84-2e1a1f122222",
+    "bid_price": "1500.00",
+    "proposal_message": "I can complete this job quickly.",
+    "estimated_days": 2,
+    "status": "PENDING",
+    "created_at": "2026-03-10T10:30:00Z"
+  }
+]
 ```
 
 ## Notes
