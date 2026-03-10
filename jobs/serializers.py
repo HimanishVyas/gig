@@ -60,7 +60,7 @@ class BidListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bid
         fields = "__all__"
-        read_only_fields = fields
+        read_only_fields = [fields]
 
 
 class WorkerBidSerializer(serializers.ModelSerializer):
@@ -69,4 +69,4 @@ class WorkerBidSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bid
         fields = "__all__"
-        read_only_fields = fields
+        read_only_fields = [fields]
